@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+      {{ app_init_js }}
+      <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+      <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+      <title>Configure Embedded App</title>
+   </head>
+   <body>
+      <form name="configure" method="PUT" action="/run/config" class="form-inline" role="form">
+         <div class="form-group">
+            <label class="sr-only" for="url">Embed URL</label>
+            <input type="url" id="url" name="url" class="form-control" placeholder="Enter URL">
+         </div>
+         <button type="submit" name="save" class="btn btn-success" data-loading-text="Saving..." autocomplete="off">Save</button>
+      </form>
+      <script type="text/javascript">
+         var $url = $('#url');
+         var $form = $('form[name="configure"]');
+         var $button = $form.find('button[type="submit"]');
+         $.getJSON($form.prop('action')).done(function(result) {
+            if (result && result.success) {
+               $url.val(result.url);
+            }
+         });
+         $form.submit(function(e) {
+            e.preventDefault();
+            $button.button('loading');
+            $.ajax({
+               'url': $form.prop('action'),
+               'type': $form.prop('method'),
+               'data': $form.serialize()
+            }).fail(function(error) {
+               alert("Failed to save: " + error.statusText);
+            }).always(function() {
+               $button.button('reset');
+            });
+         });
+      </script>
+   </body>
+</html>
