@@ -11,7 +11,9 @@ if (request.method === 'GET') {
 } else if (request.method === 'POST') {
    var hasWritePermission = request.sessionData.permissions && (request.sessionData.permissions.indexOf('write') >= 0);
    if (hasWritePermission) {
-      var result = OpenLearning.page.setData(request.data, request.user);
+      var config = request.data || {};
+      config.isEmbedded = true;
+      var result = OpenLearning.page.setData(config, request.user);
       if (result.success) {
          response.writeJSON({'success': true});
       } else {
