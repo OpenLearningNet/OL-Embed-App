@@ -31,6 +31,7 @@
                   $embedded.attr('src', result.url).load(function(e) {
                      $('html, body').css({'height': $embedded.height(), 'width': $embedded.width()});
                      $embedded.removeClass('hide');
+                     window.app.resize();
                   });
                }
             });
