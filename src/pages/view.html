@@ -8,8 +8,6 @@
          html, body, #embedded {
             padding: 0px;
             margin: 0px;
-         }
-         #embedded {
             border: 0px;
             width: 100%;
             height: 100%;
@@ -28,7 +26,6 @@
                if (result && result.success) {
                   $embedded.attr('src', result.url).load(function(e) {
                      $embedded.removeClass('hide');
-                     window.app.resize();
                   });
                }
             });
