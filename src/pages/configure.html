@@ -8,7 +8,7 @@
       <title>Configure Embedded App</title>
    </head>
    <body>
-      <form name="configure" method="PUT" action="/run/config" class="form-inline" role="form">
+      <form name="configure" action="/run/config" class="form-inline" role="form">
          <div class="form-group">
             <label class="sr-only" for="url">Embed URL</label>
             <input type="url" id="url" name="url" class="form-control" placeholder="Enter URL">
@@ -29,7 +29,7 @@
             $button.button('loading');
             $.ajax({
                'url': $form.prop('action'),
-               'type': $form.prop('method'),
+               'type': 'PUT',
                'data': $form.serialize()
             }).fail(function(error) {
                alert("Failed to save: " + error.statusText);
