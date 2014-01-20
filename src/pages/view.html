@@ -8,11 +8,13 @@
    <body>
       <div id="embedded"></div>
       <script type="text/javascript">
-         $.getJSON('/run/config').done(function(result) {
-            if (result && result.success) {
-               $('#embedded').flashembed(result.url);
-               window.app.resize();
-            }
+         $(function() {
+            $.getJSON('/run/config').done(function(result) {
+               if (result && result.success) {
+                  $('#embedded').flashembed(result.url);
+                  window.app.resize();
+               }
+            });
          });
       </script>
    </body>

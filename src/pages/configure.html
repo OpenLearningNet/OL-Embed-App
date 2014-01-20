@@ -16,25 +16,27 @@
          <button type="submit" name="save" class="btn btn-success" data-loading-text="Saving..." autocomplete="off">Save</button>
       </form>
       <script type="text/javascript">
-         var $url = $('#url');
-         var $form = $('form[name="configure"]');
-         var $button = $form.find('button[type="submit"]');
-         $.getJSON($form.prop('action')).done(function(result) {
-            if (result && result.success) {
-               $url.val(result.url);
-            }
-         });
-         $form.submit(function(e) {
-            e.preventDefault();
-            $button.button('loading');
-            $.ajax({
-               'url': $form.prop('action'),
-               'type': $form.prop('method'),
-               'data': $form.serialize()
-            }).fail(function(error) {
-               alert("Failed to save: " + error.statusText);
-            }).always(function() {
-               $button.button('reset');
+         $(function() {
+            var $url = $('#url');
+            var $form = $('form[name="configure"]');
+            var $button = $form.find('button[type="submit"]');
+            $.getJSON($form.prop('action')).done(function(result) {
+               if (result && result.success) {
+                  $url.val(result.url);
+               }
+            });
+            $form.submit(function(e) {
+               e.preventDefault();
+               $button.button('loading');
+               $.ajax({
+                  'url': $form.prop('action'),
+                  'type': $form.prop('method'),
+                  'data': $form.serialize()
+               }).fail(function(error) {
+                  alert("Failed to save: " + error.statusText);
+               }).always(function() {
+                  $button.button('reset');
+               });
             });
          });
       </script>
