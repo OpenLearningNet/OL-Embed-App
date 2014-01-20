@@ -13,16 +13,28 @@
             <label class="sr-only" for="url">Embed URL</label>
             <input type="url" id="url" name="url" class="form-control" placeholder="Enter URL">
          </div>
+         <div class="form-group">
+            <label class="sr-only" for="width">Width</label>
+            <input type="text" id="width" name="width" class="form-control" placeholder="Enter width">
+         </div>
+         <div class="form-group">
+            <label class="sr-only" for="height">Height</label>
+            <input type="text" id="height" name="height" class="form-control" placeholder="Enter height">
+         </div>
          <button type="submit" name="save" class="btn btn-success" data-loading-text="Saving..." autocomplete="off">Save</button>
       </form>
       <script type="text/javascript">
          $(function() {
             var $url = $('#url');
+            var $width = $('#width');
+            var $height = $('#height');
             var $form = $('form[name="configure"]');
             var $button = $form.find('button[type="submit"]');
             $.getJSON($form.prop('action')).done(function(result) {
                if (result && result.success) {
                   $url.val(result.url);
+                  $width.val(result.width);
+                  $height.val(result.height);
                }
             });
             $form.submit(function(e) {
