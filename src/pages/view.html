@@ -27,7 +27,6 @@
                   $embedded.attr('src', result.url).load(function(e) {
                      var width = $embedded.width();
                      var height = $embedded.height();
-                     $('html, body').css({'width': width, 'height': height});
                      $embedded.removeClass('hide');
                      window.app.resize(width, height);
                   });
