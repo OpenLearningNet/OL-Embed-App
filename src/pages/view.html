@@ -5,7 +5,11 @@
       {{ app_init_js }}
       <title>Embedded App</title>
       <style type="text/css">
-         html, body, #embedded {
+         html, body {
+            padding: 0px;
+            margin: 0px;
+         }
+         #embedded {
             padding: 0px;
             margin: 0px;
             border: 0px;
@@ -25,6 +29,7 @@
             $.getJSON('/run/config').done(function(result) {
                if (result && result.success) {
                   $embedded.attr('src', result.url).load(function(e) {
+                     $('html, body').css({'height': $embedded.height(), 'width': $embedded.width()});
                      $embedded.removeClass('hide');
                   });
                }
