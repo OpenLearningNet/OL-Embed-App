@@ -8,7 +8,7 @@ if (request.method === 'GET') {
       response.setStatusCode(422);
       response.writeJSON({'error': (data.reason || "Unknown error")});
    }
-} else if (request.method === 'PUT') {
+} else if (request.method === 'POST') {
    var hasWritePermission = request.sessionData.permissions && (request.sessionData.permissions.indexOf('write') >= 0);
    if (hasWritePermission) {
       var result = OpenLearning.page.setData(request.data, request.user);
