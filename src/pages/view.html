@@ -26,14 +26,105 @@
    <body>
       <iframe id="embedded" class="hide"></iframe>
       <script type="text/javascript">
+         function saveSubmission(args, callback) {
+            var submissionData = {};
+
+            submissionData.submit = 'false';
+
+            if (args.submit) {
+               submissionData.submit = 'true';
+            }
+
+            if (args.grading) {
+               submissionData.grading = JSON.stringify(args.grading);   
+            }
+
+            if (args.metadata) {
+               submissionData.metadata = JSON.stringify(args.metadata);
+            }
+
+            if (args.file) {
+               submissionData.file = JSON.stringify(args.file);
+            }
+
+            if (args.files) {
+               submissionData.files = JSON.stringify(args.files);
+            }
+
+            if (args.html) {
+               submissionData.html = args.html;
+            }
+
+            $.post("/run/saveSubmission", submissionData, function(response) {
+               callback(response);
+            }, 'json');
+         }
+
+         function loadSubmission(args, callback) {
+            $.getJSON("/run/getSubmission", function(submissionResponse) {
+               callback(submissionResponse);
+            });
+         }
+
+         function init($embedded, result) {
+            var embeddedWindow = $embedded[0].contentWindow;
+
+            var $url = $('<a>').attr('href', result.url);
+            var host = $url.prop('protocol') + "//" + $url.prop('host');
+
+            // PostMessage API for submissions
+            var messsageHandler = function(event) {
+               if (event.origin !== host) {
+                  return;
+               }
+               
+               // messages are always JSON'd for cross-browser compat.
+               var message = JSON.parse(event.data);
+               
+               switch (message.method) {
+                  // pass through client-side API
+                  case 'resize': window.app.resize(message.data.width, message.data.height); break;
+                  case 'updateProgress': window.app.sendMessage('updateProgress', message.data); break;
+                  case 'notify': window.app.sendMessage('notify', message.data); break;
+
+                  // add some server side API functionality
+                  case 'saveSubmission': saveSubmission(message.data, function(result) {
+                     embeddedWindow.postMessage(JSON.stringify({
+                        'method': 'saveSubmissionResponse',
+                        'data': result
+                     }), host);
+                  });
+                  break;
+
+                  case 'loadSubmission': loadSubmission(message.data, function(result) {
+                     embeddedWindow.postMessage(JSON.stringify({
+                        'method': 'loadSubmissionResponse',
+                        'data': result
+                     }), host);
+                  })
+                  break;
+               }
+            };
+
+            $embedded.attr('src', result.url).load(function(e) {
+               $embedded.removeClass('hide');
+               window.app.resize(result.width, result.height);
+            });
+
+            if (window.addEventListener) {
+               window.addEventListener("message", messageHandler, false);
+            } else {
+               window.attachEvent("onmessage", messageHandler);
+            }
+         }
+
          $(function() {
             var $embedded = $('#embedded');
             $.getJSON('/run/config').done(function(result) {
                if (result && result.success) {
-                  $embedded.attr('src', result.url).load(function(e) {
-                     $embedded.removeClass('hide');
-                     window.app.resize(result.width, result.height);
-                  });
+                  init($embedded, result);
+               } else {
+                  $('#embedded').replaceWith($('<div>').text('Unable to load this app: not configured.'));
                }
             });
          });
